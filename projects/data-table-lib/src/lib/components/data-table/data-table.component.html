@@ -1,0 +1,412 @@
+<div class="grid-container">
+  <!-- Table -->
+  <div class="table-container">
+    <!-- Toolbar -->
+    <mat-toolbar class="grid-toolbar" *ngIf="config.filtering?.enabled || config.columnVisibility?.enabled || config.export?.enabled || (config.grouping?.enabled && groupByColumns.length > 0)">
+      <!-- Global Search -->
+      <mat-form-field appearance="outline" class="search-field" *ngIf="config.filtering?.globalSearchEnabled">
+        <mat-label>Search</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (input)="onSearchInput()"
+          (keyup.enter)="applyFilter()"
+          placeholder="Search..."
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          *ngIf="searchText"
+          (click)="clearFilter()"
+          matTooltip="Clear search"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-icon matSuffix *ngIf="!searchText">search</mat-icon>
+      </mat-form-field>
+
+      <span class="spacer"></span>
+
+      <!-- Column Visibility -->
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="columnMenu"
+        matTooltip="Column Visibility"
+        *ngIf="config.columnVisibility?.enabled"
+      >
+        <mat-icon>view_column</mat-icon>
+      </button>
+      <mat-menu #columnMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let column of columns; trackBy: trackByColumn"
+          (click)="toggleColumnVisibility(column); $event.stopPropagation()"
+        >
+          <mat-checkbox
+            [checked]="isColumnVisible(column.field)"
+            (click)="$event.stopPropagation(); toggleColumnVisibility(column)"
+          >
+          </mat-checkbox>
+          <span>{{ column.label || column.field }}</span>
+        </button>
+      </mat-menu>
+
+      <!-- Clear Column Filters -->
+      <button
+        mat-icon-button
+        (click)="clearAllColumnFilters()"
+        matTooltip="Clear All Column Filters"
+        *ngIf="config.filtering?.columnFiltersEnabled && hasColumnFilter(null)"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+
+      <!-- Export -->
+      <ng-container *ngIf="config.export?.enabled">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="exportMenu"
+          matTooltip="Export Data"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="exportData('csv')" *ngIf="getAvailableExportFormats().includes('csv')">
+            <mat-icon>description</mat-icon>
+            <span>Export as CSV</span>
+          </button>
+          <button mat-menu-item (click)="exportData('xlsx')" *ngIf="getAvailableExportFormats().includes('xlsx')">
+            <mat-icon>table_chart</mat-icon>
+            <span>Export as XLSX</span>
+          </button>
+          <button mat-menu-item (click)="exportData('xls')" *ngIf="getAvailableExportFormats().includes('xls')">
+            <mat-icon>table_chart</mat-icon>
+            <span>Export as XLS</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+
+      <!-- Expand/Collapse All - Only show when group by is applied -->
+      <div class="expand-collapse-buttons" *ngIf="config.grouping?.enabled && groupByColumns.length > 0">
+        <button
+          mat-stroked-button
+          (click)="expandAllGroups()"
+          matTooltip="Expand All Groups"
+          class="expand-collapse-btn"
+        >
+          <mat-icon>unfold_more</mat-icon>
+          <span>Expand All</span>
+        </button>
+        <button
+          mat-stroked-button
+          (click)="collapseAllGroups()"
+          matTooltip="Collapse All Groups"
+          class="expand-collapse-btn"
+        >
+          <mat-icon>unfold_less</mat-icon>
+          <span>Collapse All</span>
+        </button>
+      </div>
+
+      <!-- Selection Info -->
+      <span class="selection-info" *ngIf="config.selection?.enabled && selection.selected.length > 0">
+        {{ selection.selected.length }} selected
+      </span>
+    </mat-toolbar>
+
+    <!-- Row-level bulk actions -->
+    <div class="row-action-bar" *ngIf="config.selection?.enabled">
+      <div class="row-action-buttons">
+        <button
+          mat-raised-button
+          color="primary"
+          class="row-action-btn accept"
+          [disabled]="selection.selected.length === 0"
+          (click)="acceptSelectedRows()"
+        >
+          <mat-icon>check_circle</mat-icon>
+          <span>Accept</span>
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          class="row-action-btn reject"
+          [disabled]="selection.selected.length === 0"
+          (click)="rejectSelectedRows()"
+        >
+          <mat-icon>highlight_off</mat-icon>
+          <span>Reject</span>
+        </button>
+      </div>
+      <div class="row-action-status">
+        <span *ngIf="selection.selected.length === 0 && !actionStatusMessage">
+          Select one or more rows to enable actions.
+        </span>
+        <span *ngIf="selection.selected.length > 0">
+          Ready to process {{ selection.selected.length }}
+          {{ selection.selected.length === 1 ? "row" : "rows" }}.
+        </span>
+        <span class="action-message" *ngIf="actionStatusMessage">
+          {{ actionStatusMessage }}
+        </span>
+      </div>
+    </div>
+    <div class="table-scroll-wrapper">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="sortData($event)"
+        class="mat-elevation-z8"
+      >
+      <!-- Selection Column -->
+      <ng-container matColumnDef="select" *ngIf="config.selection?.enabled">
+        <th mat-header-cell *matHeaderCellDef style="width: 48px; min-width: 48px; max-width: 48px;">
+          <mat-checkbox
+            [checked]="selectAllChecked"
+            [indeterminate]="selectAllIndeterminate"
+            [disabled]="selectableRowCount === 0"
+            (change)="masterToggle()"
+            matTooltip="Select all"
+          >
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row" style="width: 48px; min-width: 48px; max-width: 48px;">
+          <mat-checkbox
+            *ngIf="isDataRow(row)"
+            [checked]="isRowSelected(row)"
+            [disabled]="!isRowSelectable(row)"
+            (change)="toggleRow(row)"
+            (click)="$event.stopPropagation()"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Group Column -->
+      <ng-container matColumnDef="group" *ngIf="config.grouping?.enabled">
+        <th mat-header-cell *matHeaderCellDef class="group-column-header">
+          Grouped By
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngIf="isGroupRow(0, row)">
+            <div
+              class="group-header-cell"
+              [ngClass]="'group-level-' + row.level"
+              (click)="groupHeaderClick(row, $event)"
+            >
+              <mat-icon class="group-expand-icon">
+                {{ row.expanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+              </mat-icon>
+              <strong
+                >{{ row[groupByColumns[row.level - 1]] }} ({{
+                  row.totalCounts
+                }})</strong
+              >
+            </div>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Data Columns -->
+      <ng-container
+        *ngFor="let column of columns; let i = index; trackBy: trackByColumn"
+        [matColumnDef]="column.field"
+      >
+        <th mat-header-cell *matHeaderCellDef [style.width]="getColumnWidth(column)">
+          <div class="header-content">
+            <div class="header-title-row" (click)="onHeaderTitleClick($event)">
+              <div
+                class="header-title-section"
+                [mat-sort-header]="(config.sorting?.enabled && column.sortable) ? column.field : ''"
+              >
+                <span class="column-title">{{
+                  column.label || column.field
+                }}</span>
+              </div>
+              <div class="header-actions">
+                <ng-container *ngIf="config.filtering?.columnFiltersEnabled && column.filterable">
+                  <button
+                    class="grid-view-header-filter"
+                    mat-icon-button
+                    [matMenuTriggerFor]="filterMenu"
+                    (click)="$event.stopPropagation()"
+                    [class.has-filter]="hasColumnFilter(column)"
+                    matTooltip="Filter"
+                  >
+                    <mat-icon>filter_list</mat-icon>
+                  </button>
+                  <mat-menu
+                    #filterMenu="matMenu"
+                    panelClass="column-filter-menu"
+                    xPosition="before"
+                    yPosition="below"
+                  >
+                  <div
+                    class="filter-menu-wrapper"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <div class="filter-operator-selector">
+                      <div class="filter-operator-display">
+                        <mat-select
+                          class="operator-select"
+                          panelClass="operator-select-panel"
+                          disableRipple
+                          [value]="getColumnFilterOperator(column)"
+                          (selectionChange)="
+                            onColumnFilterOperatorChange(column, $event.value)
+                          "
+                        >
+                          <mat-select-trigger>
+                            <span class="operator-text">
+                              {{
+                                getFilterOperatorLabel(
+                                  getColumnFilterOperator(column)
+                                )
+                              }}
+                            </span>
+                          </mat-select-trigger>
+                          <mat-option
+                            *ngFor="let op of filterOperators"
+                            [value]="op.value"
+                          >
+                            {{ op.label }}
+                          </mat-option>
+                        </mat-select>
+                      </div>
+                    </div>
+                    <div class="filter-input-container">
+                      <div class="filter-input-wrapper">
+                        <input
+                          class="filter-input"
+                          type="text"
+                          [placeholder]="'Filter...'"
+                          [value]="getColumnFilterValue(column)"
+                          (input)="
+                            onColumnFilterChange(
+                              column,
+                              $any($event.target).value
+                            )
+                          "
+                          (click)="$event.stopPropagation()"
+                          tabindex="0"
+                        />
+                        <button
+                          *ngIf="getColumnFilterValue(column)"
+                          type="button"
+                          class="filter-clear-button"
+                          (click)="
+                            clearColumnFilter(column); $event.stopPropagation()
+                          "
+                          matTooltip="Clear filter"
+                        >
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  </mat-menu>
+                </ng-container>
+                <ng-container *ngIf="config.grouping?.enabled">
+                  <button
+                    class="grid-view-header-menu"
+                    mat-icon-button
+                    [matMenuTriggerFor]="menu"
+                    #menuTrigger="matMenuTrigger"
+                    (click)="$event.stopPropagation()"
+                    matTooltip="More options"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu
+                    #menu="matMenu"
+                    panelClass="column-menu"
+                    xPosition="before"
+                    yPosition="below"
+                  >
+                    <button mat-menu-item (click)="toggleGroupBy($event, column, menuTrigger)">
+                      <mat-icon>{{
+                        isGroupedBy(column) ? "ungroup" : "group_work"
+                      }}</mat-icon>
+                      <span>{{
+                        isGroupedBy(column) ? "Ungroup" : "Group By This Field"
+                      }}</span>
+                    </button>
+                  </mat-menu>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let row; let i = index" [style.width]="getColumnWidth(column)">
+          <ng-container *ngIf="getCellTemplate(column); else defaultCell">
+            <ng-container *ngTemplateOutlet="getCellTemplate(column)!; context: { $implicit: row, column: column, value: row[column.field], index: i }"></ng-container>
+          </ng-container>
+          <ng-template #defaultCell>
+            {{ column.format ? column.format(row[column.field]) : row[column.field] }}
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns; let i = index"
+        [ngClass]="getRowClasses(row, i)"
+        (click)="onRowClick(row)"
+        [matTooltip]="getRowTooltip(row)"
+      >      </tr>
+
+      <!-- No Results Row -->
+      <ng-container matColumnDef="noResults">
+        <td
+          mat-cell
+          *matCellDef
+          [attr.colspan]="getTotalColumnCount()"
+          class="no-results-cell"
+        >
+          <div class="no-results">
+            <mat-icon>search_off</mat-icon>
+            <p class="no-results-text">No results found</p>
+            <p class="no-results-hint">
+              Try adjusting your search or filter criteria
+            </p>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['noResults']; when: isNoResultsRow"
+      >      </tr>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="config.pagination?.enabled">
+      <div class="pagination-info">
+        <span class="pagination-text">{{ getPaginationInfo() }}</span>
+        <button
+          mat-button
+          (click)="toggleShowAll()"
+          class="show-all-button"
+          [class.active]="showAllRows"
+        >
+          <mat-icon>{{ showAllRows ? "view_list" : "view_module" }}</mat-icon>
+          <span>{{ showAllRows ? "Show Paginated" : "Show All" }}</span>
+        </button>
+      </div>
+      <mat-paginator
+        *ngIf="!showAllRows"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageSize]="pageSize"
+        [length]="totalDataRows"
+        [pageIndex]="pageIndex"
+        [showFirstLastButtons]="config.pagination?.showFirstLastButtons ?? true"
+        (page)="onPageChange($event)"
+      >
+      </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+

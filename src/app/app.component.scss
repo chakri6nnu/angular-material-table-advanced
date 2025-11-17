@@ -1,0 +1,41 @@
+.app-container {
+  padding: 24px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    margin-bottom: 8px;
+    color: #1976d2;
+  }
+
+  p {
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  lib-data-table {
+    flex: 1;
+    display: block;
+    min-height: 0;
+  }
+
+  .color-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .color-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .color-text {
+      font-weight: 500;
+    }
+  }
+}

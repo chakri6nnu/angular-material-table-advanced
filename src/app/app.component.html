@@ -1,0 +1,32 @@
+<div class="app-container">
+  <h1>{{ title }}</h1>
+  <p>This is the main app component using the data-table-lib library.</p>
+
+  <!-- Custom Cell Templates -->
+  <ng-template
+    #colorCellTemplate
+    let-row
+    let-value="value"
+    let-column="column"
+  >
+    <div class="color-cell">
+      <span
+        class="color-badge"
+        [style.background-color]="value"
+        [title]="value"
+      ></span>
+      <span class="color-text">{{ value }}</span>
+    </div>
+  </ng-template>
+
+  <lib-data-table
+    [config]="tableConfig"
+    [data]="tableData"
+    [cellTemplates]="cellTemplates"
+    (selectionChange)="onSelectionChange($event)"
+    (rowClick)="onRowClick($event)"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+  >
+  </lib-data-table>
+</div>

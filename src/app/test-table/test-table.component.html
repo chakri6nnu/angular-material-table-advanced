@@ -1,0 +1,27 @@
+<div class="test-table-container">
+  <h1>Data Table Library Test Component</h1>
+  <p>This component demonstrates the data-table-lib with comprehensive configuration options.</p>
+  
+  <div class="config-info">
+    <h2>Configuration Features:</h2>
+    <ul>
+      <li>✅ Column widths (ID: 80px, VIN: 200px, Brand: 150px, Year: 100px, Color: 120px)</li>
+      <li>✅ Sorting enabled with default sort on ID column</li>
+      <li>✅ Filtering enabled (global search + column filters)</li>
+      <li>✅ Pagination enabled (default: 10 items per page, options: 5, 10, 25, 50, 100)</li>
+      <li>✅ Grouping enabled with default group by Brand</li>
+      <li>✅ Selection enabled (multi-select)</li>
+      <li>✅ Export to CSV enabled</li>
+      <li>✅ Column visibility toggle enabled</li>
+    </ul>
+  </div>
+
+  <lib-data-table
+    [config]="tableConfig"
+    [data]="tableData"
+    (selectionChange)="onSelectionChange($event)"
+    (rowClick)="onRowClick($event)"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
+  ></lib-data-table>
+</div>

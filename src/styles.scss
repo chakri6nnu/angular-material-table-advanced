@@ -1,0 +1,208 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use "@angular/material" as mat;
+
+$my-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+    ),
+    typography: (
+      brand-family: "Roboto",
+      plain-family: "Roboto",
+    ),
+    density: (
+      scale: 0,
+    ),
+  )
+);
+
+html {
+  @include mat.all-component-themes($my-theme);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Global column filter popover styling to ensure overlay menus receive the theme */
+.column-filter-menu.mat-mdc-menu-panel {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  min-width: 260px;
+  max-width: 360px;
+  padding: 0;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18),
+    0 8px 18px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.column-filter-menu .mat-mdc-menu-content {
+  padding: 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f7fb 100%);
+}
+
+.column-filter-menu .filter-menu-wrapper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.column-filter-menu .filter-operator-selector {
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.column-filter-menu .filter-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.column-filter-menu .filter-input-wrapper {
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 16px 12px 8px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  position: relative;
+}
+
+.column-filter-menu .filter-input-wrapper::after {
+  content: "Filter value";
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Column header "Group By" menu popover */
+.column-menu.mat-mdc-menu-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  min-width: 220px;
+  padding: 0;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.16),
+    0 6px 14px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.column-menu .mat-mdc-menu-content {
+  padding: 8px 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.column-menu .mat-mdc-menu-item {
+  padding: 12px 20px;
+  min-height: 44px;
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.9);
+  gap: 12px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.column-menu .mat-mdc-menu-item mat-icon {
+  color: rgba(99, 102, 241, 0.9);
+}
+
+.column-menu .mat-mdc-menu-item:hover:not(.mat-mdc-menu-item-disabled) {
+  background: rgba(99, 102, 241, 0.08);
+  color: rgba(15, 23, 42, 1);
+}
+
+/* Remove default menu panel padding */
+.mat-mdc-menu-panel {
+  padding: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Remove inner scroll & padding */
+.mat-mdc-menu-content {
+  padding: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Wrap your fields neatly */
+.filter-menu-wrapper {
+  padding: 12px;
+  width: 240px; /* adjust as needed */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Fix select spacing */
+.operator-select .mat-mdc-select-trigger {
+  padding: 6px 8px !important;
+}
+
+/* Input styling fix */
+.filter-input {
+  height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid #d6d6d6;
+  padding: 0 12px;
+}
+
+.filter-clear-button {
+  position: absolute !important;
+  right: 20px !important;
+  top: 72% !important;
+  transform: translateY(-50%) !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+  z-index: 2 !important;
+  color: rgba(0, 0, 0, 0.54) !important;
+  margin: 0 !important;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+  }
+
+  mat-icon {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+  }
+}
+
+.mat-header-row {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background: white !important;
+  background-color: white !important;
+}

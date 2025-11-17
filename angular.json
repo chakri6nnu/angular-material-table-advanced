@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "test-tb": {
+    "angular-material-table": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/test-tb",
+            "outputPath": "dist/angular-material-table",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -73,10 +73,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "test-tb:build:production"
+              "buildTarget": "angular-material-table:build:production"
             },
             "development": {
-              "buildTarget": "test-tb:build:development"
+              "buildTarget": "angular-material-table:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   @ViewChild('colorCellTemplate', { static: true })
   colorCellTemplate!: TemplateRef<any>;
 
-  title = 'Grid Grouping - Using Data Table Library';
+  title = 'Angular Material Table - Data Table Library';
 
   cellTemplates = new Map<string, TemplateRef<any>>();
 

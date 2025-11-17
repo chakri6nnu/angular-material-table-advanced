@@ -185,10 +185,10 @@
 
       <!-- Group Column -->
       <ng-container matColumnDef="group" *ngIf="config.grouping?.enabled">
-        <th mat-header-cell *matHeaderCellDef class="group-column-header">
+        <th mat-header-cell *matHeaderCellDef class="group-column-header" style="width: 200px; min-width: 200px; max-width: 200px;">
           Grouped By
         </th>
-        <td mat-cell *matCellDef="let row">
+        <td mat-cell *matCellDef="let row" style="width: 200px; min-width: 200px; max-width: 200px;">
           <ng-container *ngIf="isGroupRow(0, row)">
             <div
               class="group-header-cell"

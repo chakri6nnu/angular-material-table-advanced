@@ -7,6 +7,7 @@ A powerful, feature-rich Angular data table component library built with Angular
 ## ✨ Features
 
 ### Core Functionality
+
 - 🔄 **Multi-column Sorting** - Click column headers to sort with visual indicators
 - 🔍 **Advanced Filtering** - Global search and column-specific filters with multiple operators
 - 📄 **Pagination** - Configurable page sizes with "Show All" option
@@ -19,6 +20,7 @@ A powerful, feature-rich Angular data table component library built with Angular
 - ⚡ **Performance Optimized** - Efficient rendering with OnPush change detection
 
 ### Filter Operators
+
 - Contains
 - Equals
 - Starts with
@@ -56,48 +58,48 @@ ng build data-table-lib
 ### 1. Import the Component
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { DataTableComponent } from 'data-table-lib';
-import { TableConfig } from 'data-table-lib';
+import { Component, OnInit } from "@angular/core";
+import { DataTableComponent } from "data-table-lib";
+import { TableConfig } from "data-table-lib";
 
 @Component({
-  selector: 'app-example',
+  selector: "app-example",
   standalone: true,
   imports: [DataTableComponent],
-  templateUrl: './example.component.html'
+  templateUrl: "./example.component.html",
 })
 export class ExampleComponent implements OnInit {
   tableConfig: TableConfig = {
     columns: [
-      { field: 'id', label: 'ID', width: '80px', sortable: true },
-      { field: 'name', label: 'Name', width: '200px', sortable: true, filterable: true },
-      { field: 'email', label: 'Email', width: '250px', sortable: true, filterable: true },
+      { field: "id", label: "ID", width: "80px", sortable: true },
+      { field: "name", label: "Name", width: "200px", sortable: true, filterable: true },
+      { field: "email", label: "Email", width: "250px", sortable: true, filterable: true },
     ],
     pagination: {
       enabled: true,
       defaultPageSize: 10,
-      pageSizeOptions: [5, 10, 25, 50, 100]
+      pageSizeOptions: [5, 10, 25, 50, 100],
     },
     sorting: { enabled: true },
     filtering: {
       enabled: true,
       globalSearchEnabled: true,
-      columnFiltersEnabled: true
+      columnFiltersEnabled: true,
     },
     selection: {
       enabled: true,
-      multiSelect: true
+      multiSelect: true,
     },
     export: {
       enabled: true,
-      formats: ['csv', 'xlsx', 'xls'],
-      fileName: 'data-export'
-    }
+      formats: ["csv", "xlsx", "xls"],
+      fileName: "data-export",
+    },
   };
 
   tableData: any[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+    { id: 1, name: "John Doe", email: "john@example.com" },
+    { id: 2, name: "Jane Smith", email: "jane@example.com" },
   ];
 
   ngOnInit() {
@@ -109,14 +111,7 @@ export class ExampleComponent implements OnInit {
 ### 2. Use in Template
 
 ```html
-<lib-data-table
-  [config]="tableConfig"
-  [data]="tableData"
-  (selectionChange)="onSelectionChange($event)"
-  (rowClick)="onRowClick($event)"
-  (sortChange)="onSortChange($event)"
-  (pageChange)="onPageChange($event)"
-></lib-data-table>
+<lib-data-table [config]="tableConfig" [data]="tableData" (selectionChange)="onSelectionChange($event)" (rowClick)="onRowClick($event)" (sortChange)="onSortChange($event)" (pageChange)="onPageChange($event)"></lib-data-table>
 ```
 
 ## 📚 Configuration Guide
@@ -143,19 +138,19 @@ interface TableConfig {
 
 ```typescript
 interface ColumnDefinition {
-  field: string;                    // Required: Data field name
-  label: string;                    // Required: Column header label
-  sortable?: boolean;               // Enable sorting (default: false)
-  filterable?: boolean;             // Enable filtering (default: false)
-  width?: string | number;         // Column width (e.g., '200px', 200)
-  minWidth?: string | number;      // Minimum column width
-  maxWidth?: string | number;      // Maximum column width
-  resizable?: boolean;             // Allow column resizing
-  sticky?: 'left' | 'right' | boolean; // Sticky column
-  visible?: boolean;                // Column visibility (default: true)
-  align?: 'left' | 'right' | 'center'; // Text alignment
+  field: string; // Required: Data field name
+  label: string; // Required: Column header label
+  sortable?: boolean; // Enable sorting (default: false)
+  filterable?: boolean; // Enable filtering (default: false)
+  width?: string | number; // Column width (e.g., '200px', 200)
+  minWidth?: string | number; // Minimum column width
+  maxWidth?: string | number; // Maximum column width
+  resizable?: boolean; // Allow column resizing
+  sticky?: "left" | "right" | boolean; // Sticky column
+  visible?: boolean; // Column visibility (default: true)
+  align?: "left" | "right" | "center"; // Text alignment
   format?: (value: any) => string; // Custom value formatter
-  cellTemplate?: string;           // Custom cell template reference name
+  cellTemplate?: string; // Custom cell template reference name
 }
 ```
 
@@ -164,9 +159,9 @@ interface ColumnDefinition {
 ```typescript
 interface PaginationConfig {
   enabled: boolean;
-  defaultPageSize?: number;        // Default: 10
-  pageSizeOptions?: number[];       // Default: [5, 10, 25, 50, 100]
-  showFirstLastButtons?: boolean;  // Default: true
+  defaultPageSize?: number; // Default: 10
+  pageSizeOptions?: number[]; // Default: [5, 10, 25, 50, 100]
+  showFirstLastButtons?: boolean; // Default: true
 }
 ```
 
@@ -176,7 +171,7 @@ interface PaginationConfig {
 interface GroupingConfig {
   enabled: boolean;
   defaultGroupByColumns?: string[]; // Columns to group by initially
-  expandAllByDefault?: boolean;     // Expand all groups on load
+  expandAllByDefault?: boolean; // Expand all groups on load
 }
 ```
 
@@ -186,8 +181,8 @@ interface GroupingConfig {
 interface SortingConfig {
   enabled: boolean;
   defaultSort?: {
-    active: string;                // Column field to sort by
-    direction: 'asc' | 'desc';     // Sort direction
+    active: string; // Column field to sort by
+    direction: "asc" | "desc"; // Sort direction
   };
 }
 ```
@@ -197,8 +192,8 @@ interface SortingConfig {
 ```typescript
 interface FilteringConfig {
   enabled: boolean;
-  globalSearchEnabled?: boolean;    // Enable global search box
-  columnFiltersEnabled?: boolean;  // Enable column-specific filters
+  globalSearchEnabled?: boolean; // Enable global search box
+  columnFiltersEnabled?: boolean; // Enable column-specific filters
   filterOperators?: FilterOperator[]; // Custom filter operators
 }
 ```
@@ -208,7 +203,7 @@ interface FilteringConfig {
 ```typescript
 interface SelectionConfig {
   enabled: boolean;
-  multiSelect?: boolean;            // Allow multiple selection
+  multiSelect?: boolean; // Allow multiple selection
   selectableRowPredicate?: (row: any) => boolean; // Custom selectable logic
 }
 ```
@@ -218,12 +213,12 @@ interface SelectionConfig {
 ```typescript
 interface ExportConfig {
   enabled: boolean;
-  fileName?: string;               // Export file name (without extension)
-  formats?: ExportFormat[];        // Available formats: ['csv', 'xlsx', 'xls']
-  defaultFormat?: ExportFormat;     // Default export format
+  fileName?: string; // Export file name (without extension)
+  formats?: ExportFormat[]; // Available formats: ['csv', 'xlsx', 'xls']
+  defaultFormat?: ExportFormat; // Default export format
 }
 
-type ExportFormat = 'csv' | 'xls' | 'xlsx';
+type ExportFormat = "csv" | "xls" | "xlsx";
 ```
 
 ## 🎨 Advanced Usage
@@ -233,24 +228,24 @@ type ExportFormat = 'csv' | 'xls' | 'xlsx';
 Create custom cell renderers for specific columns:
 
 ```typescript
-import { Component, ViewChild, TemplateRef } from '@angular/core';
+import { Component, ViewChild, TemplateRef } from "@angular/core";
 
 export class MyComponent {
-  @ViewChild('statusCellTemplate', { static: true }) statusCellTemplate!: TemplateRef<any>;
+  @ViewChild("statusCellTemplate", { static: true }) statusCellTemplate!: TemplateRef<any>;
   cellTemplates = new Map<string, TemplateRef<any>>();
 
   ngOnInit() {
-    this.cellTemplates.set('statusCell', this.statusCellTemplate);
+    this.cellTemplates.set("statusCell", this.statusCellTemplate);
   }
 
   tableConfig: TableConfig = {
     columns: [
       {
-        field: 'status',
-        label: 'Status',
-        cellTemplate: 'statusCell' // Reference to template
-      }
-    ]
+        field: "status",
+        label: "Status",
+        cellTemplate: "statusCell", // Reference to template
+      },
+    ],
   };
 }
 ```
@@ -260,11 +255,7 @@ export class MyComponent {
   <span [class]="'status-' + value">{{ value }}</span>
 </ng-template>
 
-<lib-data-table
-  [config]="tableConfig"
-  [data]="tableData"
-  [cellTemplates]="cellTemplates"
-></lib-data-table>
+<lib-data-table [config]="tableConfig" [data]="tableData" [cellTemplates]="cellTemplates"></lib-data-table>
 ```
 
 ### Conditional Row Classes
@@ -276,14 +267,14 @@ tableConfig: TableConfig = {
   columns: [...],
   rowClassFunction: (row: any, index: number) => {
     const classes: { [key: string]: boolean } = {};
-    
+
     if (row.status === 'active') {
       classes['row-active'] = true;
     }
     if (row.priority === 'high') {
       classes['row-high-priority'] = true;
     }
-    
+
     return classes;
   }
 };
@@ -312,28 +303,26 @@ tableConfig: TableConfig = {
 Load data from an Observable:
 
 ```typescript
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Observable } from "rxjs";
+import { HttpClient } from "@angular/common/http";
 
 export class MyComponent {
   dataService$: Observable<any>;
 
   constructor(private http: HttpClient) {
-    this.dataService$ = this.http.get('/api/data');
+    this.dataService$ = this.http.get("/api/data");
   }
 }
 ```
 
 ```html
-<lib-data-table
-  [config]="tableConfig"
-  [dataService]="dataService$"
-></lib-data-table>
+<lib-data-table [config]="tableConfig" [dataService]="dataService$"></lib-data-table>
 ```
 
 ## 📡 Events
 
 ### selectionChange
+
 Emitted when row selection changes.
 
 ```typescript
@@ -343,6 +332,7 @@ onSelectionChange(selected: any[]) {
 ```
 
 ### rowClick
+
 Emitted when a row is clicked.
 
 ```typescript
@@ -352,6 +342,7 @@ onRowClick(row: any) {
 ```
 
 ### sortChange
+
 Emitted when sorting changes.
 
 ```typescript
@@ -363,6 +354,7 @@ onSortChange(sort: Sort) {
 ```
 
 ### pageChange
+
 Emitted when pagination changes.
 
 ```typescript
@@ -376,124 +368,115 @@ onPageChange(event: PageEvent) {
 ## 📝 Complete Example
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { DataTableComponent } from 'data-table-lib';
-import { TableConfig } from 'data-table-lib';
-import { PageEvent } from '@angular/material/paginator';
-import { Sort } from '@angular/material/sort';
+import { Component, OnInit } from "@angular/core";
+import { DataTableComponent } from "data-table-lib";
+import { TableConfig } from "data-table-lib";
+import { PageEvent } from "@angular/material/paginator";
+import { Sort } from "@angular/material/sort";
 
 @Component({
-  selector: 'app-data-table-example',
+  selector: "app-data-table-example",
   standalone: true,
   imports: [DataTableComponent],
-  template: `
-    <lib-data-table
-      [config]="tableConfig"
-      [data]="tableData"
-      (selectionChange)="onSelectionChange($event)"
-      (rowClick)="onRowClick($event)"
-      (sortChange)="onSortChange($event)"
-      (pageChange)="onPageChange($event)"
-    ></lib-data-table>
-  `
+  template: ` <lib-data-table [config]="tableConfig" [data]="tableData" (selectionChange)="onSelectionChange($event)" (rowClick)="onRowClick($event)" (sortChange)="onSortChange($event)" (pageChange)="onPageChange($event)"></lib-data-table> `,
 })
 export class DataTableExampleComponent implements OnInit {
   tableConfig: TableConfig = {
     columns: [
       {
-        field: 'id',
-        label: 'ID',
-        width: '80px',
-        sortable: true
+        field: "id",
+        label: "ID",
+        width: "80px",
+        sortable: true,
       },
       {
-        field: 'name',
-        label: 'Name',
-        width: '200px',
+        field: "name",
+        label: "Name",
+        width: "200px",
         sortable: true,
-        filterable: true
+        filterable: true,
       },
       {
-        field: 'email',
-        label: 'Email',
-        width: '250px',
+        field: "email",
+        label: "Email",
+        width: "250px",
         sortable: true,
-        filterable: true
+        filterable: true,
       },
       {
-        field: 'status',
-        label: 'Status',
-        width: '120px',
+        field: "status",
+        label: "Status",
+        width: "120px",
         sortable: true,
-        filterable: true
-      }
+        filterable: true,
+      },
     ],
     pagination: {
       enabled: true,
       defaultPageSize: 10,
       pageSizeOptions: [5, 10, 25, 50, 100],
-      showFirstLastButtons: true
+      showFirstLastButtons: true,
     },
     grouping: {
       enabled: true,
       defaultGroupByColumns: [],
-      expandAllByDefault: true
+      expandAllByDefault: true,
     },
     sorting: {
       enabled: true,
       defaultSort: {
-        active: 'id',
-        direction: 'asc'
-      }
+        active: "id",
+        direction: "asc",
+      },
     },
     filtering: {
       enabled: true,
       globalSearchEnabled: true,
-      columnFiltersEnabled: true
+      columnFiltersEnabled: true,
     },
     selection: {
       enabled: true,
-      multiSelect: true
+      multiSelect: true,
     },
     export: {
       enabled: true,
-      formats: ['csv', 'xlsx', 'xls'],
-      fileName: 'data-export'
+      formats: ["csv", "xlsx", "xls"],
+      fileName: "data-export",
     },
     columnVisibility: {
-      enabled: true
+      enabled: true,
     },
     rowClassFunction: (row: any, index: number) => {
       return {
-        'row-active': row.status === 'active',
-        'row-inactive': row.status === 'inactive'
+        "row-active": row.status === "active",
+        "row-inactive": row.status === "inactive",
       };
-    }
+    },
   };
 
   tableData: any[] = [];
 
   ngOnInit() {
     this.tableData = [
-      { id: 1, name: 'John Doe', email: 'john@example.com', status: 'active' },
-      { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'inactive' },
+      { id: 1, name: "John Doe", email: "john@example.com", status: "active" },
+      { id: 2, name: "Jane Smith", email: "jane@example.com", status: "inactive" },
     ];
   }
 
   onSelectionChange(selected: any[]) {
-    console.log('Selected:', selected);
+    console.log("Selected:", selected);
   }
 
   onRowClick(row: any) {
-    console.log('Clicked:', row);
+    console.log("Clicked:", row);
   }
 
   onSortChange(sort: Sort) {
-    console.log('Sort:', sort);
+    console.log("Sort:", sort);
   }
 
   onPageChange(event: PageEvent) {
-    console.log('Page:', event);
+    console.log("Page:", event);
   }
 }
 ```
@@ -581,4 +564,3 @@ For issues and feature requests, please use the GitHub issue tracker.
 - Built with [Angular](https://angular.io/)
 - UI components from [Angular Material](https://material.angular.io/)
 - Excel export powered by [SheetJS](https://sheetjs.com/)
-

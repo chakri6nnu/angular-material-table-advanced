@@ -3,12 +3,7 @@
   <p>This is the main app component using the data-table-lib library.</p>
 
   <!-- Custom Cell Templates -->
-  <ng-template
-    #colorCellTemplate
-    let-row
-    let-value="value"
-    let-column="column"
-  >
+  <ng-template #colorCellTemplate let-row let-value="value" let-column="column">
     <div class="color-cell">
       <span
         class="color-badge"

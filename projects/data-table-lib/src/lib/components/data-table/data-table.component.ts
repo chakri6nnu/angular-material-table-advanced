@@ -873,6 +873,41 @@ export class DataTableComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.cellTemplates.get(column.cellTemplate) || null;
   }
 
+  getCellClasses(column: ColumnDefinition, row: any, value: any, index: number): { [key: string]: boolean } {
+    const classes: { [key: string]: boolean } = {};
+
+    if (column.cellClassFunction) {
+      const customClasses = column.cellClassFunction(row, value, column, index);
+      if (typeof customClasses === 'string') {
+        classes[customClasses] = true;
+      } else if (Array.isArray(customClasses)) {
+        customClasses.forEach((cls) => {
+          classes[cls] = true;
+        });
+      } else if (typeof customClasses === 'object') {
+        Object.assign(classes, customClasses);
+      }
+    }
+
+    return classes;
+  }
+
+  getCellValue(column: ColumnDefinition, row: any, index: number): any {
+    const originalValue = row[column.field];
+    
+    // Apply cellValueFunction if provided
+    if (column.cellValueFunction) {
+      return column.cellValueFunction(row, originalValue, column, index);
+    }
+    
+    // Apply format function if provided
+    if (column.format) {
+      return column.format(originalValue);
+    }
+    
+    return originalValue;
+  }
+
   getDataRows(): any[] {
     return this.dataSource.data.filter((row) => !(row instanceof Group));
   }

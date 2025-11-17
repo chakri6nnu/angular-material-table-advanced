@@ -12,5 +12,7 @@ export interface ColumnDefinition {
   align?: 'left' | 'right' | 'center';
   format?: (value: any) => string;
   cellTemplate?: string; // Template reference name for custom cell template
+  cellClassFunction?: (row: any, value: any, column: ColumnDefinition, index: number) => string | string[] | { [key: string]: boolean };
+  cellValueFunction?: (row: any, value: any, column: ColumnDefinition, index: number) => any; // Transform cell value conditionally
 }
 

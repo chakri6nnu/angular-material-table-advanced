@@ -36,6 +36,21 @@ export class AppComponent implements OnInit {
         width: '200px',
         sortable: true,
         filterable: true,
+        cellClassFunction: (
+          row: any,
+          value: any,
+          column: any,
+          index: number
+        ) => {
+          const classes: { [key: string]: boolean } = {};
+
+          // Highlight cell with specific VIN
+          if (value === 'WVWAA71K08W201030') {
+            classes['highlighted-vin-cell'] = true;
+          }
+
+          return classes;
+        },
       },
       {
         field: 'brand',
@@ -50,6 +65,18 @@ export class AppComponent implements OnInit {
         width: '100px',
         sortable: true,
         filterable: true,
+        cellValueFunction: (
+          row: any,
+          value: any,
+          column: any,
+          index: number
+        ) => {
+          // Example: Add prefix for years before 2015
+          if (value < 2015) {
+            return `⚠️ ${value} (Old)`;
+          }
+          return value;
+        },
       },
       {
         field: 'color',
@@ -68,7 +95,7 @@ export class AppComponent implements OnInit {
     },
     grouping: {
       enabled: true,
-      defaultGroupByColumns: [],
+      defaultGroupByColumns: ['brand'],
       expandAllByDefault: true,
     },
     sorting: {
@@ -90,6 +117,16 @@ export class AppComponent implements OnInit {
     },
     columnVisibility: {
       enabled: true,
+    },
+    rowClassFunction: (row: any, index: number) => {
+      const classes: { [key: string]: boolean } = {};
+
+      // Highlight row with specific VIN
+      if (row.vin === 'WVWAA71K08W201030') {
+        classes['highlighted-row'] = true;
+      }
+
+      return classes;
     },
   };
 

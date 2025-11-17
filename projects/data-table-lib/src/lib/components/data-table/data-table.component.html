@@ -338,12 +338,12 @@
             </div>
           </div>
         </th>
-        <td mat-cell *matCellDef="let row; let i = index" [style.width]="getColumnWidth(column)">
+        <td mat-cell *matCellDef="let row; let i = index" [style.width]="getColumnWidth(column)" [ngClass]="getCellClasses(column, row, row[column.field], i)">
           <ng-container *ngIf="getCellTemplate(column); else defaultCell">
-            <ng-container *ngTemplateOutlet="getCellTemplate(column)!; context: { $implicit: row, column: column, value: row[column.field], index: i }"></ng-container>
+            <ng-container *ngTemplateOutlet="getCellTemplate(column)!; context: { $implicit: row, column: column, value: getCellValue(column, row, i), index: i }"></ng-container>
           </ng-container>
           <ng-template #defaultCell>
-            {{ column.format ? column.format(row[column.field]) : row[column.field] }}
+            {{ getCellValue(column, row, i) }}
           </ng-template>
         </td>
       </ng-container>

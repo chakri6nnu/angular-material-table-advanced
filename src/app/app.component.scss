@@ -39,3 +39,29 @@
     }
   }
 }
+
+// Highlighted row styling
+::ng-deep .highlighted-row {
+  background-color: #fff3cd !important;
+  border-left: 4px solid #ffc107 !important;
+  
+  &:hover {
+    background-color: #ffe69c !important;
+  }
+  
+  td {
+    background-color: transparent !important;
+  }
+}
+
+// Highlighted cell styling
+::ng-deep .highlighted-vin-cell {
+  background-color: #e3f2fd !important;
+  font-weight: 600 !important;
+  color: #1976d2 !important;
+  border: 2px solid #2196f3 !important;
+  
+  &:hover {
+    background-color: #bbdefb !important;
+  }
+}
